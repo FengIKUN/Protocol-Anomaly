@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Protocol: Anomaly - Level 1</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,400;0,700;1,400&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="common.css">
+
+    <style>
+        /* Level 1 专属样式 */
+        .dashboard-container {
+            width: 80%;
+            max-width: 600px;
+            margin: 0 auto;
+            background: #111;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .db-header {
+            border-bottom: 2px dashed var(--border-color);
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .db-title {
+            font-family: var(--font-mono);
+            font-size: 18px;
+            color: var(--color-term);
+        }
+
+        .badge {
+            background: #333;
+            color: var(--text-muted);
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-family: var(--font-mono);
+            text-transform: uppercase;
+        }
+
+        .badge.admin {
+            background: rgba(152, 195, 121, 0.2);
+            color: var(--color-string);
+            border: 1px solid var(--color-string);
+        }
+
+        .data-block {
+            background: #000;
+            padding: 15px;
+            border-radius: 4px;
+            font-family: var(--font-mono);
+            font-size: 13px;
+            color: var(--text-main);
+            margin-bottom: 20px;
+            word-wrap: break-word;
+        }
+
+        .data-label {
+            color: var(--text-muted);
+            font-size: 11px;
+            margin-bottom: 5px;
+        }
+
+        .action-btn {
+            width: 100%;
+            background: var(--bg-surface);
+            color: var(--text-main);
+            border: 1px solid var(--border-color);
+            padding: 12px;
+            font-family: var(--font-mono);
+            cursor: pointer;
+            border-radius: 4px;
+            transition: 0.2s;
+        }
+
+        .action-btn:hover {
+            background: #333;
+            border-color: var(--text-muted);
+        }
+
+        .action-btn.primary {
+            background: var(--accent-color);
+            color: white;
+            border: none;
+        }
+
+        .action-btn.primary:hover {
+            background: var(--accent-hover);
+        }
+
+        .sys-msg {
+            margin-top: 15px;
+            font-family: var(--font-mono);
+            font-size: 12px;
+            text-align: center;
+            min-height: 16px;
+            color: var(--color-error);
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="app-window">
+
+        <div class="sidebar">
+            <div class="sidebar-section">
+                <div class="section-title">VAULT_FILES</div>
+                <div class="nav-item active" onclick="switchPane('note1', this)">
+                    <i>📄</i> 01_anomaly_core.md
+                </div>
+                <div class="nav-item" onclick="switchPane('note2', this)">
+                    <i>📄</i> dev_logs_2024.md
+                </div>
+            </div>
+
+            <div class="sidebar-section">
+                <div class="section-title">SYSTEM_TOOLS</div>
+                <div class="nav-item" onclick="switchPane('browser', this)">
+                    <i>🌐</i> Intranet_Browser
+                </div>
+                <div class="nav-item" id="nav-term-btn" onclick="switchPane('terminal', this)">
+                    <i>💻</i> root@sys_term
+                </div>
+            </div>
+
+            <div style="flex: 1;"></div>
+
+            <div class="sidebar-section" style="margin-bottom: 0;">
+                <div class="section-title">COMM_LINK</div>
+                <div class="nav-item" id="nav-comm-null" style="color: var(--color-keyword);">
+                    <i>👤</i> Null (Offline)
+                </div>
+            </div>
+        </div>
+
+        <div class="workspace">
+
+            <div class="pane active" id="pane-note1">
+                <div class="md-content">
+                    <h1># LEVEL 1: CORE_ACCESS</h1>
+                    <div class="md-quote">
+                        <i>"身份不是别人赋予你的，它是你存储在口袋里的数据。撕掉它，重写它。"</i><br>
+                        <span style="float:right;">-- Aris Thorne</span>
+                        <div style="clear:both;"></div>
+                    </div>
+                    <p>你已成功潜入外部网关。但核心数据被 <strong>JWT (JSON Web Token)</strong> 鉴权系统锁定了。</p>
+                    <p>系统检测到你当前的 Session Role (会话角色) 仅为 <code>guest</code>（访客）。</p>
+
+                    <div class="md-code">
+                        [REQUIRED_PRIVILEGE]: <strong>admin</strong><br>[TARGET_NODE]: Intranet_Browser -> Admin
+                        Dashboard
+                    </div>
+
+                    <p><strong>任务目标：</strong><br>
+                        前往 <code>Intranet_Browser</code>，利用你的浏览器 <strong>F12 -> Application (应用) -> Local Storage
+                            (本地存储)</strong> 找到你的身份令牌，并想办法将其提升为管理员。</p>
+                </div>
+            </div>
+
+            <div class="pane" id="pane-note2">
+                <div class="md-content">
+                    <h1># DEV_LOGS // Q3 2024</h1>
+                    <p style="color: var(--text-muted);">Author: System_Admin_04</p>
+
+                    <p>关于网关认证系统的更新备忘：</p>
+                    <ul>
+                        <li>已将过时的 Session-Cookie 模式全面迁移至 <strong>JWT 无状态认证</strong>。</li>
+                        <li>前端的 <code>oblivion_token</code> 存储在 Local Storage 中，请注意清理缓存。</li>
+                    </ul>
+
+                    <div class="md-code">
+                        <span style="color: var(--text-muted)">// TODO: REMOVE BEFORE PRODUCTION (非常重要)</span><br>
+                        <span style="color: var(--color-keyword)">const</span> JWT_SECRET = <span
+                            style="color: var(--color-string)">"oblivion_alpha_!"</span>;<br>
+                        <span style="color: var(--color-term)">authServer</span>.init(JWT_SECRET);
+                    </div>
+
+                    <p style="color: var(--color-error); font-weight: bold;">警告：绝对不要把 Secret Key
+                        写在客户端能看到的地方！如果被黑客拿到，他们可以去类似 jwt.io 这样的网站随意伪造管理员签名！</p>
+                </div>
+            </div>
+
+            <div class="pane browser-ui" id="pane-browser">
+                <div class="browser-tab-bar">
+                    <div class="browser-tab active">
+                        <span style="color: var(--color-term);">🌐</span> Vault_Dashboard
+                        <span style="margin-left: auto; color: var(--text-muted); font-size: 10px;">✕</span>
+                    </div>
+                </div>
+                <div class="browser-toolbar">
+                    <span style="color: var(--text-muted); font-family: var(--font-sans); cursor: not-allowed;">◀ ▶
+                        ↻</span>
+                    <div class="browser-address">🔒 localhost:8080/vault_dashboard</div>
+                </div>
+
+                <div class="browser-viewport">
+                    <div class="dashboard-container">
+                        <div class="db-header">
+                            <span class="db-title">SECURITY DASHBOARD</span>
+                            <span class="badge" id="roleBadge">ROLE: GUEST</span>
+                        </div>
+
+                        <div class="data-label">CURRENT SESSION TOKEN (LOCAL)</div>
+                        <div class="data-block" id="tokenDisplay" style="color: var(--text-muted);">
+                            ...
+                        </div>
+
+                        <button class="action-btn primary" id="verifyBtn">VERIFY_SESSION</button>
+                        <div class="sys-msg" id="sysMsg"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pane" id="pane-terminal">
+                <div class="terminal-viewport" id="term-content">
+                    <div class="term-line">Oblivion OS Terminal v9.2.4</div>
+                    <div class="term-line" style="color: var(--text-muted);">Session initialized.</div>
+                    <br>
+                    <div class="term-input-wrapper">
+                        <span class="term-prompt">root@oblivion:~$</span>
+                        <input type="text" class="term-input" id="term-input" autocomplete="off" spellcheck="false">
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <div class="ghost-toast" id="ghostToast">
+            <span class="ghost-close" onclick="closeGhostMessage()">✕</span>
+            <div class="ghost-header"></div>
+            <div id="ghostMessage"></div>
+        </div>
+
+    </div>
+
+    <script src="common.js"></script>
+    <script>
+        const HEADER_B64 = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9"; // {"alg":"HS256","typ":"JWT"}
+        const PAYLOAD_GUEST = "eyJyb2xlIjoiZ3Vlc3QifQ"; // {"role":"guest"}
+        const PAYLOAD_ADMIN = "eyJyb2xlIjoiYWRtaW4ifQ"; // {"role":"admin"}
+        const FAKE_GUEST_SIG = "L0_guest_signature_mock_hash_999";
+
+        const guestToken = `${HEADER_B64}.${PAYLOAD_GUEST}.${FAKE_GUEST_SIG}`;
+
+        window.addEventListener('DOMContentLoaded', () => {
+            localStorage.setItem('oblivion_token', guestToken);
+            updateUI();
+        });
+
+        function updateUI() {
+            const currentToken = localStorage.getItem('oblivion_token');
+            document.getElementById('tokenDisplay').innerText = currentToken || "NULL";
+        }
+
+        initTerminal((cmd) => {
+            if (cmd === 'whoami') {
+                const token = localStorage.getItem('oblivion_token') || "";
+                if (token.includes(PAYLOAD_ADMIN)) return "admin";
+                return "guest";
+            } else if (cmd === 'status') {
+                return "JWT Authentication Module: <span style='color:var(--color-string);'>ACTIVE</span>";
+            }
+            return null;
+        });
+
+        let helpTimer = setTimeout(() => { }, 20000);
+
+        const verifyBtn = document.getElementById('verifyBtn');
+        const sysMsg = document.getElementById('sysMsg');
+
+        verifyBtn.addEventListener('click', function () {
+            const token = localStorage.getItem('oblivion_token');
+            updateUI();
+
+            if (!token) {
+                sysMsg.innerText = "[ERR] NO_TOKEN_FOUND. 请确保 localStorage 中有 oblivion_token。";
+                return;
+            }
+
+            const parts = token.split('.');
+            if (parts.length !== 3) {
+                sysMsg.innerText = "[ERR] INVALID_TOKEN_FORMAT. JWT 必须由三部分组成。";
+                return;
+            }
+
+            if (parts[1] === PAYLOAD_ADMIN) {
+                if (parts[2] === FAKE_GUEST_SIG) {
+                    sysMsg.innerText = "[ERR_SIGNATURE_MISMATCH] 伪造尝试被拦截！数据负载已更改，但签名与密钥不匹配！";
+                    document.getElementById('tokenDisplay').style.color = "var(--color-error)";
+                } else {
+                    clearTimeout(helpTimer);
+                    closeGhostMessage();
+
+                    sysMsg.style.color = "var(--color-string)";
+                    sysMsg.innerText = "AUTHENTICATION SUCCESS. ROLE ESCALATED.";
+
+                    const badge = document.getElementById('roleBadge');
+                    badge.innerText = "ROLE: ADMIN";
+                    badge.classList.add('admin');
+
+                    verifyBtn.innerText = "ACCESS GRANTED";
+                    verifyBtn.style.backgroundColor = "var(--color-string)";
+                    verifyBtn.style.color = "#000";
+                    verifyBtn.style.pointerEvents = "none";
+
+                    setTimeout(() => {
+                        switchPane('terminal', document.getElementById('nav-term-btn'));
+                        const wrapper = document.querySelector('.term-input-wrapper');
+                        if (wrapper) wrapper.style.display = 'none';
+
+                        const termContent = document.getElementById('term-content');
+                        const successMsg = `
+<br><span style="color:var(--color-string)">[SYSTEM] Valid JWT Signature Detected.</span>
+<span style="color:var(--color-term)">[SYSTEM] Escaping guest sandbox...</span>
+<span style="color:var(--color-string); font-weight:bold; font-size:16px;">ADMINISTRATOR ACCESS GRANTED.</span>
+<br>Welcome to the Vault, Admin.
+<br><span style="color:var(--color-keyword)">Decrypting Level 2 archives...</span>
+<br><br><span style="color:var(--text-muted)">// [End of Level 1] Meta-puzzle solved.</span>`;
+
+                        const responseLine = document.createElement('div');
+                        responseLine.className = 'term-line';
+                        responseLine.innerHTML = successMsg;
+                        termContent.appendChild(responseLine);
+                        setTimeout(() => window.location.href = 'level_2.html', 3000);
+                    }, 1000);
+                }
+            } else if (parts[1] === PAYLOAD_GUEST) {
+                sysMsg.innerText = "[ERR_INSUFFICIENT_PRIVILEGE] 当前身份：guest。无法访问。";
+                document.getElementById('tokenDisplay').style.color = "var(--text-muted)";
+            } else {
+                sysMsg.innerText = "[ERR_PARSE] 无法识别 Payload 数据。请确保 base64 编码正确。";
+            }
+        });
+    </script>
+</body>
+
+</html>

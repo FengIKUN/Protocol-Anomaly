@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Protocol: Anomaly - Level 2</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,400;0,700;1,400&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="common.css">
+
+    <style>
+        /* 内置浏览器地址栏变为可输入状态 */
+        .browser-address {
+            background: #000;
+            border: 1px solid var(--accent-color);
+            border-radius: 4px;
+            padding: 6px 15px;
+            font-family: var(--font-mono);
+            font-size: 13px;
+            color: var(--color-string);
+            flex: 1;
+            outline: none;
+            box-shadow: 0 0 10px rgba(125, 70, 200, 0.2);
+        }
+
+        .browser-address:focus {
+            border-color: var(--accent-hover);
+            box-shadow: 0 0 10px rgba(125, 70, 200, 0.5);
+        }
+
+        .go-btn {
+            background: var(--bg-surface);
+            color: var(--text-main);
+            border: 1px solid var(--border-color);
+            padding: 6px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-family: var(--font-sans);
+            font-size: 12px;
+        }
+
+        .go-btn:hover {
+            background: #333;
+        }
+
+        /* 隐藏的恢复控制台 UI */
+        .recovery-console {
+            background: #0a0a0a;
+            border: 1px solid #333;
+            width: 450px;
+            padding: 30px;
+            border-radius: 8px;
+            text-align: center;
+            display: none;
+            /* 初始隐藏 */
+        }
+
+        .recovery-console.show {
+            display: block;
+        }
+
+        .error-screen {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            color: var(--text-muted);
+            font-family: var(--font-mono);
+            font-size: 14px;
+            text-align: center;
+        }
+
+        .pulse-btn {
+            background: #111;
+            color: var(--color-term);
+            border: 1px solid var(--color-term);
+            padding: 12px 25px;
+            margin-top: 20px;
+            font-family: var(--font-mono);
+            font-size: 14px;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: 0.3s;
+            width: 100%;
+        }
+
+        .pulse-btn:hover {
+            background: rgba(97, 175, 239, 0.2);
+            box-shadow: 0 0 15px rgba(97, 175, 239, 0.4);
+        }
+
+        .ui-error {
+            margin-top: 15px;
+            color: var(--color-error);
+            font-size: 12px;
+            font-family: var(--font-mono);
+            height: 20px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="app-window">
+
+        <!-- === 侧边栏导航 === -->
+        <div class="sidebar">
+            <div class="sidebar-section">
+                <div class="section-title">VAULT_FILES</div>
+                <div class="nav-item active" onclick="switchPane('note1', this)">
+                    <i>📄</i> 02_where_is_she.md
+                </div>
+                <div class="nav-item" onclick="switchPane('note2', this)">
+                    <i>🔤</i> wordlist.txt
+                </div>
+            </div>
+
+            <div class="sidebar-section">
+                <div class="section-title">SYSTEM_TOOLS</div>
+                <div class="nav-item" id="nav-browser-btn" onclick="switchPane('browser', this)">
+                    <i>🌐</i> Intranet_Browser
+                </div>
+                <div class="nav-item" id="nav-term-btn" onclick="switchPane('terminal', this)">
+                    <i>💻</i> root@sys_term
+                </div>
+            </div>
+
+            <div style="flex: 1;"></div>
+
+            <div class="sidebar-section" style="margin-bottom: 0;">
+                <div class="section-title">COMM_LINK</div>
+                <div class="nav-item" id="nav-comm-null" style="color: var(--color-keyword);">
+                    <i>👤</i> Null (Offline)
+                </div>
+            </div>
+        </div>
+
+        <!-- === 主工作区 === -->
+        <div class="workspace">
+
+            <!-- 面板 1：主线剧情笔记 -->
+            <div class="pane active" id="pane-note1">
+                <div class="md-content">
+                    <h1># LEVEL 2: RECON & INTERCEPT</h1>
+                    <div class="md-quote">
+                        <i>"Scan the whole wall if there's no doors."</i>
+                    </div>
+                    <p>管理员权限已确认。但 Aris 将受损的 AI 助手 <strong>M.I.A.</strong> 藏在了内网的一个孤立节点中，入口链接已被销毁。</p>
+
+                    <p><strong>[行动指南]：</strong></p>
+                    <ul>
+                        <li><span style="color:var(--color-term)">[情报]</span> 已知目标位于子网：<code>10.42.0.0/24</code></li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- 面板 2：字典文件 -->
+            <div class="pane" id="pane-note2">
+                <div class="md-content">
+                    <h1 style="font-size: 18px; color: var(--text-muted);"># wordlist.txt</h1>
+                    <div class="md-code" style="color: var(--text-muted); line-height: 2;">
+                        admin<br>
+                        test_env<br>
+                        api_v1<br>
+                        backup_db<br>
+                        mia_recovery<br>
+                        hidden_portal<br>
+                        sys_logs
+                    </div>
+                    <p style="font-size: 12px; color: var(--text-muted);">// 渗透测试常用目录字典</p>
+                </div>
+            </div>
+
+            <!-- 面板 3：内置浏览器 -->
+            <div class="pane browser-ui" id="pane-browser">
+                <div class="browser-tab-bar">
+                    <div class="browser-tab active">
+                        <span style="color: var(--color-term);">🌐</span> Network_Explorer
+                        <span style="margin-left: auto; color: var(--text-muted); font-size: 10px;">✕</span>
+                    </div>
+                </div>
+                <!-- 改为可交互的地址栏 -->
+                <div class="browser-toolbar">
+                    <span style="color: var(--text-muted); font-family: var(--font-sans); cursor: not-allowed;">◀ ▶
+                        ↻</span>
+                    <input type="text" class="browser-address" id="url-input" value="http://localhost/gateway"
+                        autocomplete="off" spellcheck="false">
+                    <button class="go-btn" id="url-go-btn">GO</button>
+                </div>
+
+                <div class="browser-viewport" id="browser-viewport">
+                    <!-- 默认错误页 -->
+                    <div class="error-screen" id="browser-404">
+                        <div style="font-size: 48px; margin-bottom: 15px;">🌐</div>
+                        <div>ERR_CONNECTION_REFUSED</div>
+                        <div style="font-size: 12px; margin-top: 10px; color: #555;">Please enter a valid internal IP
+                            address and directory.</div>
+                    </div>
+
+                    <!-- 隐藏的 M.I.A. 恢复控制台 (输入正确URL后显示) -->
+                    <div class="recovery-console" id="mia-console">
+                        <h2 style="font-family:var(--font-mono); color:var(--text-main); margin-top:0;">M.I.A. CORE
+                            RECOVERY</h2>
+                        <p style="font-family:var(--font-mono); font-size:12px; color:var(--text-muted);">
+                            WARNING: System damage detected. UI rendering engine offline.
+                        </p>
+                        <button class="pulse-btn" id="pulse-btn">SEND_RECOVERY_PULSE</button>
+                        <div class="ui-error" id="pulse-error"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 面板 4：终端 -->
+            <div class="pane" id="pane-terminal">
+                <div class="terminal-viewport" id="term-content">
+                    <div class="term-line">Oblivion OS Terminal v9.2.4 (Recon Tools Installed)</div>
+                    <div class="term-line" style="color: var(--text-muted);">Available tools: nmap, gobuster, inject
+                    </div>
+                    <br>
+                    <div class="term-input-wrapper">
+                        <span class="term-prompt">root@oblivion:~$</span>
+                        <input type="text" class="term-input" id="term-input" autocomplete="off" spellcheck="false">
+                    </div>
+                </div>
+            </div>
+
+        </div> <!-- Workspace End -->
+
+        <div class="ghost-toast" id="ghostToast">
+            <span class="ghost-close" onclick="closeGhostMessage()">✕</span>
+            <div class="ghost-header"></div>
+            <div id="ghostMessage"></div>
+        </div>
+
+    </div>
+
+    <script src="common.js"></script>
+    <script>
+
+        const EXPECTED_IP = "10.42.0.77";
+        const EXPECTED_PORT = "8081";
+        const EXPECTED_DIR = "mia_recovery";
+        const SECRET_KEY = "AXIOM_FALLS";
+
+        initTerminal((rawInput, cmdBase, args) => {
+            const lowerInput = rawInput.toLowerCase();
+
+            if (cmdBase === 'nmap') {
+                if (args.length === 0) {
+                    return `Nmap 7.92 ( https://nmap.org )<br>Usage: nmap[Scan Type(s)] [Options] {target specification}<br>Example: nmap -sV -p- 10.0.0.1`;
+                }
+                if (lowerInput.includes('-sn') && lowerInput.includes('10.42.0.0/24')) {
+                    return `Starting Nmap 7.92...<br>
+                            Nmap scan report for ${EXPECTED_IP}<br>
+                            Host is up (0.001s latency).<br>
+                            Nmap done: 256 IP addresses (1 host up) scanned in 2.14 seconds.`;
+                }
+                if (lowerInput.includes(EXPECTED_IP) && !lowerInput.includes('-sv')) {
+                    return `Starting Nmap 7.92...<br>
+                            PORT     STATE SERVICE<br>
+                            8081/tcp open  unknown<br>
+                            Nmap done: 1 IP address scanned.`;
+                }
+                if (lowerInput.includes('-sv') && lowerInput.includes(EXPECTED_IP)) {
+                    return `Starting Nmap 7.92...<br>
+                            PORT     STATE SERVICE<br>
+                            <span style="color:var(--color-string)">8081/tcp open  http</span><br>
+                            Nmap done: 1 IP address scanned.`;
+                }
+                return `WARNING: No targets were specified, so 0 hosts scanned.<br>ERROR: target not found.`;
+            }
+
+            else if (cmdBase === 'gobuster') {
+                if (args.length === 0) {
+                    return `Usage:<br>  gobuster [command]<br><br>Available Commands:<br>  dir         Uses directory/file enumeration mode`;
+                }
+                if (!lowerInput.includes('-u') || !lowerInput.includes('-w')) {
+                    return `Error: Missing required arguments: -u (URL) and -w (Wordlist).`;
+                }
+                if (lowerInput.includes(EXPECTED_IP) && lowerInput.includes('wordlist.txt')) {
+                    return `===============================================================<br>
+                            Gobuster v3.1.0<br>
+                            ===============================================================<br>
+                            [+] Url:            http://${EXPECTED_IP}:${EXPECTED_PORT}<br>
+                            [+] Wordlist:       wordlist.txt<br>
+                            ===============================================================<br>
+                            /admin                (Status: 403)<br>
+                            <span style="color:var(--color-string)">/${EXPECTED_DIR}         (Status: 200)</span><br>
+                            ===============================================================<br>
+                            Finished.`;
+                }
+                return `Error: the wordlist or target URL was not reachable.`;
+            }
+
+            else if (cmdBase === 'inject') {
+                if (args.length === 0) {
+                    return `Usage: inject [payload_key]`;
+                }
+                if (args[0] && args[0].toUpperCase() === SECRET_KEY) {
+                    triggerLevelClear();
+                    return `<span style="color:var(--color-string)">[SUCCESS] Key accepted. Booting M.I.A. cognitive matrix...</span>`;
+                } else {
+                    return `<span style="color:var(--color-error)">[ERROR] Invalid key format or incorrect payload.</span>`;
+                }
+            }
+
+            return null;
+        });
+
+        const urlInput = document.getElementById('url-input');
+        const goBtn = document.getElementById('url-go-btn');
+        const screen404 = document.getElementById('browser-404');
+        const miaConsole = document.getElementById('mia-console');
+
+        function checkUrl() {
+            const url = urlInput.value.toLowerCase().trim();
+            if (url.includes(`${EXPECTED_IP}:${EXPECTED_PORT}/${EXPECTED_DIR}`)) {
+                screen404.style.display = 'none';
+                miaConsole.classList.add('show');
+            } else {
+                screen404.style.display = 'flex';
+                miaConsole.classList.remove('show');
+            }
+        }
+
+        goBtn.addEventListener('click', checkUrl);
+        urlInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') checkUrl(); });
+
+        const pulseBtn = document.getElementById('pulse-btn');
+        const pulseError = document.getElementById('pulse-error');
+
+        pulseBtn.addEventListener('click', () => {
+            pulseBtn.innerText = "TRANSMITTING...";
+            pulseBtn.style.pointerEvents = "none";
+            pulseError.style.color = "var(--text-muted)";
+            pulseError.innerText = "Establishing secure handshake...";
+
+            fetch('/api/mia/recovery_pulse', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ action: "initiate_recovery" })
+            })
+                .then(response => {
+                    pulseBtn.innerText = "RETRY_PULSE";
+                    pulseBtn.style.pointerEvents = "auto";
+                    pulseError.style.color = "var(--color-error)";
+                    pulseError.innerText = "UI_RENDER_FAILURE: Payload received but UI engine crashed.";
+
+                    console.warn("[SYSTEM_ERROR] Frontend crashed before rendering the data. Check the Network tab for the recent '/api/mia/recovery_pulse' POST request headers.");
+                })
+                .catch(error => {
+                    pulseError.innerText = "NETWORK ERROR. Is the Service Worker running?";
+                });
+        });
+
+        let helpTimer1 = setTimeout(() => {
+            showGhostMessage(`
+                用<code>nmap -sn</code> 找 IP。<br>
+                用<code>nmap -sV</code> 查找端口。<br>
+                用<code>gobuster</code> 找目录。<br>
+            `, "Null");
+        }, 40000);
+
+        let helpTimer2;
+        pulseBtn.addEventListener('click', () => {
+            clearTimeout(helpTimer1);
+            if (!helpTimer2) {
+                helpTimer2 = setTimeout(() => {
+                    closeGhostMessage();
+                    setTimeout(() => {
+                        showGhostMessage(`
+                            在 Network 查看 Headers 中的 <code>X-Hidden-Activation-Key</code>，去终端<code>inject</code> 那个值。
+                        `, "Null");
+                    }, 500);
+                }, 15000);
+            }
+        });
+
+        function triggerLevelClear() {
+            clearTimeout(helpTimer1);
+            clearTimeout(helpTimer2);
+            closeGhostMessage();
+
+            setTimeout(() => {
+                const termContent = document.getElementById('term-content');
+                const wrapper = document.querySelector('.term-input-wrapper');
+                if (wrapper) wrapper.style.display = 'none';
+
+                const successMsg = `
+<br><span style="color:var(--color-term)">[SYSTEM] Neural link established.</span>
+<span style="color:var(--color-string); font-weight:bold; font-size:16px;">M.I.A. IS ONLINE.</span>
+<br><span style="color:var(--color-keyword)">[M.I.A]: "Thank... you... Admin."</span>
+<span style="color:var(--color-keyword)">[M.I.A]: "Aris left a warning. The protocol is mutating."</span>
+<br><span style="color:var(--text-muted)">// [End of Level 2] Forwarding to Level 3...</span>`;
+
+                const responseLine = document.createElement('div');
+                responseLine.className = 'term-line';
+                responseLine.innerHTML = successMsg;
+                termContent.appendChild(responseLine);
+
+                document.body.style.animation = 'glitchOut 0.5s forwards';
+
+            }, 800);
+        }
+    </script>
+</body>
+
+</html>

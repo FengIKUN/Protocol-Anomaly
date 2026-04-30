@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Protocol: Anomaly - Level 0</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,400;0,700;1,400&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="common.css">
+
+    <style>
+        .login-box {
+            background: var(--bg-app);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 40px;
+            width: 380px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .corp-logo {
+            font-family: var(--font-mono);
+            font-size: 24px;
+            color: var(--text-main);
+            letter-spacing: 2px;
+            font-weight: bold;
+        }
+
+        .login-input {
+            width: 100%;
+            background: #111;
+            border: 1px solid var(--border-color);
+            color: var(--text-muted);
+            padding: 10px;
+            font-family: var(--font-mono);
+            font-size: 13px;
+            border-radius: 4px;
+            pointer-events: none;
+        }
+
+        #loginBtn {
+            width: 100%;
+            background-color: var(--accent-color);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 12px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: 0.2s;
+            font-family: var(--font-mono);
+            margin-top: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        #loginBtn:disabled {
+            background-color: #2a2a2a;
+            color: #555;
+            cursor: not-allowed;
+            border: 1px solid #333;
+        }
+
+        #loginBtn:not(:disabled):hover {
+            background-color: var(--accent-hover);
+            box-shadow: 0 0 15px rgba(125, 70, 200, 0.4);
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="app-window">
+
+        <div class="sidebar">
+
+            <div class="sidebar-section">
+                <div class="section-title">VAULT_FILES</div>
+                <div class="nav-item active" onclick="switchPane('note', this)">
+                    <i>📄</i> 00_gatekeeper.md
+                </div>
+            </div>
+
+            <div class="sidebar-section">
+                <div class="section-title">SYSTEM_TOOLS</div>
+                <div class="nav-item" onclick="switchPane('browser', this)">
+                    <i>🌐</i> Intranet_Browser
+                </div>
+                <div class="nav-item" id="nav-term-btn" onclick="switchPane('terminal', this)">
+                    <i>💻</i> root@sys_term
+                </div>
+            </div>
+
+            <div style="flex: 1;"></div> <!-- 将通讯栏推到底部 -->
+
+            <div class="sidebar-section" style="margin-bottom: 0;">
+                <div class="section-title">COMM_LINK</div>
+                <div class="nav-item" id="nav-comm-null" style="color: var(--color-keyword);">
+                    <i>👤</i> Null (Offline)
+                </div>
+            </div>
+        </div>
+
+        <div class="workspace">
+
+            <div class="pane active" id="pane-note">
+                <div class="md-content">
+                    <h1># INIT_SEQUENCE: GATEKEEPER</h1>
+                    <div class="md-quote">
+                        <i>"The door is never truly locked, they only blindfold you. Look beneath the surface
+                            (DOM)."</i><br>
+                        <span style="float:right;">-- M.I.A.</span>
+                        <div style="clear:both;"></div>
+                    </div>
+                    <p>System gateway is currently running on the local virtual node.</p>
+
+                    <div class="md-code">
+                        <span style="color: var(--color-keyword)">TARGET</span>: http://127.0.0.1:8080/auth_gateway<br>
+                        <span style="color: var(--color-keyword)">STATUS</span>: ONLINE
+                    </div>
+
+                    <p><strong>[SYSTEM_LOG]</strong></p>
+                    <p style="font-family: var(--font-mono); font-size: 13px; color: var(--text-muted);">
+                        > Checking authorization status...<br>
+                        > <span style="color: var(--color-error);">ERR_403: UI Controller lock detected.</span><br>
+                        > Standard authorization flow is disabled by Administrator.<br>
+                        > <span style="color: var(--color-string);">Physical layer bypass required.</span>
+                    </p>
+
+                    <p
+                        style="color: var(--text-muted); font-size: 12px; margin-top: 40px; font-family: var(--font-mono);">
+                        // Please use SYSTEM_TOOLS -> Intranet_Browser to access the node.</p>
+                </div>
+            </div>
+
+            <div class="pane browser-ui" id="pane-browser">
+                <div class="browser-tab-bar">
+                    <div class="browser-tab active">
+                        <span style="color: var(--color-term);">🌐</span> Auth_Gateway
+                        <span style="margin-left: auto; color: var(--text-muted); font-size: 10px;">✕</span>
+                    </div>
+                </div>
+                <div class="browser-toolbar">
+                    <span style="color: var(--text-muted); font-family: var(--font-sans); cursor: not-allowed;">◀ ▶
+                        ↻</span>
+                    <div class="browser-address">🔒 localhost:8080/auth_gateway</div>
+                </div>
+                <div class="browser-viewport">
+                    <div class="login-box">
+                        <div class="corp-logo">OBLIVION CORP</div>
+                        <div
+                            style="font-size: 11px; color: var(--text-muted); font-family: var(--font-mono); margin-bottom: 10px;">
+                            EMPLOYEE INTRANET PORTAL</div>
+
+                        <input type="text" class="login-input" value="ID: researcher_77" readonly>
+                        <input type="text" class="login-input" value="KEY: [ENCRYPTED]" readonly>
+
+                        <div
+                            style="width: 100%; text-align: left; color: var(--color-error); font-size: 11px; font-family: var(--font-mono); margin-top: 5px;">
+                            [STATUS: UI_DISABLED]
+                        </div>
+
+                        <button id="loginBtn" disabled="disabled">AUTHORIZE_LOGIN</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pane" id="pane-terminal">
+                <div class="terminal-viewport" id="term-content">
+                    <div class="term-line">Oblivion OS Terminal v9.2.4 (x86_64-node)</div>
+                    <div class="term-line" style="color: var(--text-muted);">Type 'help' for available commands.</div>
+                    <br>
+                    <div class="term-input-wrapper">
+                        <span class="term-prompt">root@oblivion:~$</span>
+                        <input type="text" class="term-input" id="term-input" autocomplete="off" spellcheck="false">
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <div class="ghost-toast" id="ghostToast">
+            <span class="ghost-close" onclick="closeGhostMessage()">✕</span>
+            <div class="ghost-header"></div>
+            <div id="ghostMessage"></div>
+        </div>
+
+    </div>
+
+    <script src="common.js"></script>
+    <script>
+        initTerminal((cmd) => {
+            if (cmd === 'help') {
+                return "Available commands: <br> help - Show this message <br> status - Check system status <br> whoami - Display current user";
+            } else if (cmd === 'status') {
+                return "Gateway server: <span style='color:var(--color-string);'>ONLINE</span> | UI Controller: <span style='color:var(--color-error);'>LOCKED</span>";
+            }
+            return null;
+        });
+
+        let helpTimer = setTimeout(() => {
+            const hintHtml = `
+                按下你<strong>F12</strong> (或右键检查元素)，打开浏览器的开发者工具。<br><br>
+                删掉 <code>disabled="disabled"</code>试试看吧。
+            `;
+            showGhostMessage(hintHtml, "Null");
+        }, 45000);
+
+        const loginBtn = document.getElementById('loginBtn');
+
+        loginBtn.addEventListener('click', function () {
+            clearTimeout(helpTimer);
+            closeGhostMessage();
+
+            this.innerText = 'AUTHENTICATING...';
+            this.style.backgroundColor = 'var(--color-string)';
+            this.style.color = '#000';
+
+            setTimeout(() => {
+                switchPane('terminal', document.getElementById('nav-term-btn'));
+
+                const wrapper = document.querySelector('.term-input-wrapper');
+                if (wrapper) wrapper.style.display = 'none';
+
+                const termContent = document.getElementById('term-content');
+                const successMsg = `
+<br><span style="color:var(--color-term)">[SYSTEM] Physical layer manipulation detected.</span>
+<span style="color:var(--color-term)">[SYSTEM] Bypassing UI lock protocol...</span>
+<span style="color:var(--color-string); font-weight:bold; font-size:16px;">ACCESS GRANTED.</span>
+<br>User: researcher_77
+Privilege Escalation: Level 1
+<br><span style="color:var(--color-keyword)">Injecting payload into core system...</span>
+<br><br><span style="color:var(--text-muted)">// [End of Level 0] Forwarding to Level 1...</span>`;
+
+                const responseLine = document.createElement('div');
+                responseLine.className = 'term-line';
+                responseLine.innerHTML = successMsg;
+                termContent.appendChild(responseLine);
+
+                setTimeout(() => window.location.href = 'level_1.html', 3000);
+            }, 600);
+        });
+    </script>
+</body>
+
+</html>

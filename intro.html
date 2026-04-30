@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Protocol: Anomaly - Initialization</title>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,400;0,700;1,400&display=swap"
+        rel="stylesheet">
+
+    <style>
+        :root {
+            --bg-app: #0a0a0a;
+            --bg-main: #141414;
+            --text-main: #d4d4d4;
+            --text-muted: #6b737c;
+            --accent-color: #7d46c8;
+            --accent-hover: #9d68e1;
+            --color-keyword: #c678dd;
+            --color-string: #98c379;
+            --color-term: #61afef;
+            --color-error: #e06c75;
+            --border-color: #2a2a2a;
+            --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body,
+        html {
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            width: 100vw;
+            background-color: var(--bg-app);
+            color: var(--text-main);
+            font-family: var(--font-sans);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            background-image: radial-gradient(circle at 50% 50%, #1a1a1a 0%, #0a0a0a 100%);
+        }
+
+        /* 引导文档容器 */
+        .readme-container {
+            width: 85vw;
+            max-width: 800px;
+            height: 80vh;
+            max-height: 700px;
+            background-color: var(--bg-main);
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8);
+            display: flex;
+            flex-direction: column;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: slideUpFadeIn 4s ease forwards 4s;
+            /* 等待终端打字完成后显示 */
+        }
+
+        @keyframes slideUpFadeIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* 顶部装饰条 */
+        .window-header {
+            height: 30px;
+            background: #000;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            padding: 0 15px;
+            gap: 8px;
+            flex-shrink: 0;
+            border-radius: 8px 8px 0 0;
+        }
+
+        .dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #333;
+        }
+
+        .dot.red {
+            background: #ff5f56;
+        }
+
+        .dot.yellow {
+            background: #ffbd2e;
+        }
+
+        .dot.green {
+            background: #27c93f;
+        }
+
+        .content-scroll {
+            flex: 1;
+            padding: 40px 50px;
+            overflow-y: auto;
+            line-height: 1.7;
+            font-size: 14px;
+        }
+
+        .doc-title {
+            font-family: var(--font-mono);
+            color: var(--color-keyword);
+            font-size: 22px;
+            margin-bottom: 30px;
+            border-bottom: 1px dashed var(--border-color);
+            padding-bottom: 15px;
+        }
+
+        h2 {
+            font-size: 16px;
+            color: var(--text-main);
+            font-family: var(--font-mono);
+            margin-top: 35px;
+            text-transform: uppercase;
+        }
+
+        h2::before {
+            content: "> ";
+            color: var(--color-term);
+        }
+
+        p {
+            color: #a0aab5;
+        }
+
+        strong {
+            color: var(--text-main);
+        }
+
+        .tool-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .tool-card {
+            background: #1e1e1e;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 15px 20px;
+            border-left: 3px solid var(--color-term);
+        }
+
+        .tool-name {
+            font-family: var(--font-mono);
+            color: var(--color-string);
+            font-weight: bold;
+            font-size: 15px;
+            margin-bottom: 5px;
+        }
+
+        .tool-desc {
+            font-size: 13px;
+            color: var(--text-muted);
+            margin: 0;
+        }
+
+        .action-footer {
+            background: #0f0f0f;
+            padding: 20px 50px;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+            flex-shrink: 0;
+            border-radius: 0 0 8px 8px;
+        }
+
+        .checkbox-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--text-muted);
+            font-size: 13px;
+            cursor: pointer;
+            font-family: var(--font-mono);
+        }
+
+        input[type="checkbox"] {
+            accent-color: var(--accent-color);
+            cursor: pointer;
+            width: 16px;
+            height: 16px;
+        }
+
+        .init-btn {
+            background-color: transparent;
+            color: var(--text-muted);
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            padding: 12px 40px;
+            font-size: 15px;
+            cursor: not-allowed;
+            transition: all 0.3s;
+            font-family: var(--font-mono);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .init-btn.unlocked {
+            background-color: var(--accent-color);
+            color: white;
+            border-color: var(--accent-color);
+            cursor: pointer;
+            box-shadow: 0 0 20px rgba(125, 70, 200, 0.4);
+        }
+
+        .init-btn.unlocked:hover {
+            background-color: var(--accent-hover);
+            transform: translateY(-2px);
+        }
+
+        #boot-terminal {
+            position: absolute;
+            font-family: var(--font-mono);
+            font-size: 14px;
+            color: var(--color-string);
+            text-align: center;
+            z-index: 10;
+        }
+
+        .cursor {
+            display: inline-block;
+            width: 8px;
+            height: 15px;
+            background: var(--color-string);
+            animation: blink 1s step-end infinite;
+            vertical-align: middle;
+        }
+
+        @keyframes blink {
+            50% {
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="boot-terminal"></div>
+
+    <div class="readme-container" id="readme-box">
+        <div class="window-header">
+            <div class="dot red"></div>
+            <div class="dot yellow"></div>
+            <div class="dot green"></div>
+        </div>
+
+        <div class="content-scroll">
+            <div class="doc-title">README_FIRST.md</div>
+
+            <p>如果你看到了这份文件，说明你已经触发了引线，并即将接入 OBLIVION CORP. 公司的内部网络。</p>
+            <p>我是
+                <strong>&lt;Null&gt;</strong>。接下来的旅程不是普通的解谜游戏。现实与虚拟的边界将在这里消融，你所看到的界面，很多时候只是用来蒙蔽双眼的谎言。
+            </p>
+            <p>在进入游戏之前，确保你的大脑装备了以下“武器”：</p>
+
+            <h2>[REQUIRED_ARSENAL] 工具箱清单</h2>
+            <div class="tool-grid">
+                <div class="tool-card">
+                    <div class="tool-name">[F12] 浏览器开发者工具</div>
+                    <p class="tool-desc">按键盘上的 <code>F12</code>（或右键“检查”）。学会在
+                        <strong>Elements</strong> 中修改页面结构，在 <strong>Network</strong> 中寻找数据，在
+                        <strong>Application</strong> 中伪造身份。
+                    </p>
+                </div>
+
+                <div class="tool-card" style="border-left-color: var(--color-string);">
+                    <div class="tool-name">[Terminal] 命令行终端模拟</div>
+                    <p class="tool-desc">游戏中没有精美的 UI 按钮。遇到不会的命令，记得使用 <code>help</code>。使用
+                        <code>nmap</code>, <code>gobuster</code> 等工具去探测未知领域。
+                    </p>
+                </div>
+
+                <div class="tool-card" style="border-left-color: var(--color-keyword);">
+                    <div class="tool-name">[OSINT] 常识</div>
+                    <p class="tool-desc">不要把思维局限在这个网页内。如果遇到结尾带 '=' 的乱码，试着找个
+                        <strong>Base64解码器</strong>；如果遇到刺耳的音频，试着看看它的<strong>频谱图</strong>。善用现实世界的神器（如 CyberChef）。
+                    </p>
+                </div>
+            </div>
+
+            <h2>[WARNING] 系统警告</h2>
+            <p style="color: var(--color-error); font-size: 13px;">一旦建立连接，系统的反制程序将会启动。保持隐蔽，不要相信 AI 说的每一句话。祝你好运。</p>
+
+        </div>
+
+        <div class="action-footer">
+            <label class="checkbox-wrapper">
+                <input type="checkbox" id="agree-checkbox">
+                <span>[ACKNOWLEDGE] 我已理解上述机制，现在进入游戏。</span>
+            </label>
+            <button class="init-btn" id="init-btn" disabled>INITIATE_CONNECTION</button>
+        </div>
+    </div>
+
+    <script>
+        const bootText = "Establishing secure drop... \nDecrypting message from <Null>...";
+        const bootTerminal = document.getElementById('boot-terminal');
+        const readmeBox = document.getElementById('readme-box');
+
+        let i = 0;
+        function typeWriter() {
+            if (i < bootText.length) {
+                bootTerminal.innerHTML = bootText.substring(0, i + 1).replace('\n', '<br>') + '<span class="cursor"></span>';
+                i++;
+                setTimeout(typeWriter, 40);
+            } else {
+                setTimeout(() => {
+                    bootTerminal.style.display = 'none';
+                }, 1000);
+            }
+        }
+
+        window.onload = typeWriter;
+
+        const checkbox = document.getElementById('agree-checkbox');
+        const btn = document.getElementById('init-btn');
+
+        checkbox.addEventListener('change', function () {
+            if (this.checked) {
+                btn.removeAttribute('disabled');
+                btn.classList.add('unlocked');
+                btn.innerText = 'ENTER_THE_VAULT';
+            } else {
+                btn.setAttribute('disabled', 'disabled');
+                btn.classList.remove('unlocked');
+                btn.innerText = 'INITIATE_CONNECTION';
+            }
+        });
+
+        btn.addEventListener('click', function () {
+            if (!this.hasAttribute('disabled')) {
+                this.innerText = 'CONNECTING...';
+                this.style.backgroundColor = 'var(--color-string)';
+                document.body.style.animation = 'glitchOut 0.5s forwards';
+
+                setTimeout(() => {
+                    window.location.href = 'level_0.html';
+                    // document.body.innerHTML = '<h1 style="color:var(--color-string); font-family:monospace;">[CONNECTION ESTABLISHED - LOADING LEVEL 0]</h1>';
+                }, 800);
+            }
+        });
+    </script>
+</body>
+
+</html>
